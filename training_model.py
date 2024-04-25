@@ -12,12 +12,19 @@ from keras.optimizers import SGD
 nltk.download('punkt')
 
 # Initialize stemmer
-stemmer = nltk.LancasterStemmer()
+stemmer = LancasterStemmer()
 
 # AWS S3 setup
+# Creating a client to verify access
 s3 = boto3.client('s3')
 bucket_name = 'ai-chatbot-data-nidhi'
 object_key = 'intents.json'
+try:
+    # List the buckets to check the credentials
+    buckets = s3.bucket_name
+    print("Access successful. Buckets:", buckets)
+except Exception as e:
+    print("Error accessing S3:", str(e))
 
 # Fetch the data from S3
 response = s3.get_object(Bucket=bucket_name, Key=object_key)
@@ -56,16 +63,19 @@ for x, doc in enumerate(docs_x):
 training = np.array(training)
 output = np.array(output)
 
-
 # Model definition
+model = None  # Initialize a global model variable
+
+
 def train_model(X, y):
+    global model
     model = Sequential()
     model.add(Dense(128, input_shape=(len(X[0]),), activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(64, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(len(y[0]), activation='softmax'))
-    sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+    sgd = SGD(learning_rate=0.01, momentum=0.9, nesterov=True)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     model.fit(X, y, epochs=200, batch_size=5, verbose=1)
     return model
@@ -76,9 +86,11 @@ def save_model(model):
     model.save('models/chat_model.h5')
 
 
-if __name__ == "__main__":
-    model = train_model(training, output)
-    save_model(model)
+# Load the trained model
+def load_model():
+    global model
+    from keras.models import load_model
+    model = load_model('models/chat_model.h5')
 
 
 def chatbot_response(text):
@@ -104,10 +116,16 @@ def chatbot_response(text):
         return "I didn't get that. Can you explain or try again?"
 
 
-print("Start talking with the bot (type quit to stop)!")
-while True:
-    inp = input("You: ")
-    if inp.lower() == "quit":
-        break
-    response = chatbot_response(inp)
-    print(f"Bot: {response}")
+if __name__ == "__main__":
+    model = train_model(training, output)
+    save_model(model)
+
+    load_model()  # Ensure the model is loaded
+
+    print("Start talking with the bot (type quit to stop)!")
+    while True:
+        inp = input("You: ")
+        if inp.lower() == "quit":
+            break
+        response = chatbot_response(inp)
+        print(f"Bot: {response}")

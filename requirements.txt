@@ -1,0 +1,5 @@
+nltk
+boto3
+numpy
+keras
+tensorflow
