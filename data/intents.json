@@ -1,0 +1,19 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": ["Hi", "Hello", "Is anyone there?", "Good day"],
+      "responses": ["Hello!", "Good to see you!", "Hi there, how can I help?"]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": ["Bye", "See you later", "Goodbye"],
+      "responses": ["See you later!", "Have a nice day", "Goodbye!"]
+    },
+    {
+      "tag": "tech_support",
+      "patterns": ["I'm having trouble logging in", "I can't access my account", "I forgot my password"],
+      "responses": ["Have you tried resetting your password?", "You can reset your password using the 'Forgot Password' link."]
+    }
+  ]
+}
