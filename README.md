@@ -6,3 +6,18 @@
 4) random: This module implements pseudo-random number generators for various distributions. It is used here to randomly select a response from a list of possible responses.
 5) json: JSON is a lightweight data interchange format inspired by JavaScript object literal syntax. This is used to handle the data (intents and responses) stored in JSON format.
 
+Ensure all below pointers are met to get started!:
+
+Dependencies and NLTK Setup: You've imported necessary libraries and ensured the 'punkt' tokenizer models are downloaded for NLTK.
+
+Stemmer Initialization: You initialize the Lancaster Stemmer for word normalization.
+
+AWS S3 Setup: You set up AWS S3 to fetch the intents.json file which contains data needed for training the bot.
+
+Data Loading and Preprocessing: You load the data from S3, tokenize and stem words, prepare the labels, and generate a bag of words model for each sentence.
+
+Model Training: You define a function to build and train a neural network model using Keras. The model architecture consists of dense layers with dropout for regularization and is trained with SGD optimizer.
+
+Model Saving: You have a function to save the trained model locally.
+
+Chatbot Interaction: Finally, you set up a simple loop to allow real-time chatting with the bot, processing the user's input using the trained model to generate responses.
